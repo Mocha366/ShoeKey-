@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+	<title>WALL</title>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+	<script src="https://code.jquery.com/jquery-3.3.1.min.js"crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js" type="text/javascript"></script>
+	<script type="text/javascript">
+	let client;
+	
+	$(function(){
+		//MQTT Brokerへの接続設定
+		client = new Paho.MQTT.Client("mqtt.isc.ac.jp", 8443, "nazotokiNewManager-" + Math.random());
+		
+		//接続切断時のコールバック関数設定
+		client.onConnectionLost = onConnectionLost;
+
+		//MQTT Brokerへの接続処理
+		client.connect({userName:"isc", password:"iwasaki3_", useSSL:true, onSuccess:onConnect});
+
+		//メッセージ受信時の処理
+		client.onMessageArrived = onMessageArrived;
+	});
+		
+	//接続完了時のコールバック関数
+	function onConnect() {
+		console.log("MQTT Connected");
+		client.subscribe("ifLink/servo01");
+	}
+
+	//接続切断時のコールバック関数
+	function onConnectionLost(responseObject) {
+		console.log("MQTT Connection Lost");
+		client.connect({userName:"isc", password:"iwasaki3_", useSSL:true, onSuccess:onConnect});
+	}
+	
+	//Subscribeしたメッセージを受信した時に呼び出される関数
+	function onMessageArrived(message) {
+		let msg = message.payloadString;
+		console.log(msg);
+
+		//ここでif文
+		if(msg == 'Test'){
+			alert("Hello");
+		}
+
+		if(msg === 'Testmitti'){
+			const status = document.getElementById("status");
+			status.innerText = "🔓 鍵が開きました！";
+			document.body.style.backgroundColor = "#d4edda"; // 成功っぽい緑色
+
+			// 数秒後に戻す
+			setTimeout(() => {
+			status.innerText = "🔒 ロック中";
+			document.body.style.backgroundColor = "white";
+			}, 5000);
+		}
+	}
+			
+	</script>
+	<style type="text/css">
+	</style>
+</head>
+<body class="text-center">
+  <div class="container">
+    <h1 id="status" class="display-3 my-5">🔒 ロック中</h1>
+    <p>MQTTメッセージが届くと鍵が開きます。</p>
+  </div>
+</body>
+</html>
