@@ -43,23 +43,27 @@
 		console.log(msg);
 
 		//ここでif文
-		if(msg == 'Test'){
-			alert("Hello");
-		}
+		const status = document.getElementById("status");
+		status.innerText = "🔓 鍵が開きました！";
+		document.body.style.backgroundColor = "#d4edda"; // 成功っぽい緑色
 
-		if(msg === 'Testmitti'){
-			const status = document.getElementById("status");
-			status.innerText = "🔓 鍵が開きました！";
-			document.body.style.backgroundColor = "#d4edda"; // 成功っぽい緑色
+		console.log("fetch start");                // 先にログを出して
+		fetch('http://localhost:5000/trigger', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ message: msg })     // ← ここだけ
+		})
+		.then(r => r.json())
+		.then(console.log)
+		.catch(console.error);
 
-			// 数秒後に戻す
-			setTimeout(() => {
-			status.innerText = "🔒 ロック中";
-			document.body.style.backgroundColor = "white";
-			}, 5000);
-		}
+		// 数秒後に戻す
+		setTimeout(() => {
+		status.innerText = "🔒 ロック中";
+		document.body.style.backgroundColor = "white";
+		}, 5000);
+		
 	}
-			
 	</script>
 	<style type="text/css">
 	</style>
