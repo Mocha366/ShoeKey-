@@ -5,7 +5,6 @@ body {
     min-height: 100vh;
     margin: 0;
     overflow: hidden;
-    /* ★変更: bodyに壁テクスチャを適用 */
     background-image: url('image/wall.png');
     background-size: cover;
     background-position: center;
@@ -13,7 +12,7 @@ body {
 
 .scene {
     width: 290px;
-    height: 590px;
+    height: 600px;
     position: relative;
     border: 1px solid #ccc;
     display: flex;
@@ -25,13 +24,15 @@ body {
     transform-style: preserve-3d;
     perspective: 1200px; 
     
-    
-    /* ★変更: 背景を白に変更し、テクスチャ指定は削除 */
     background-color: #ffffff; 
 }
 
 .scene.zoom-in {
-    transform: scale(2.5);
+    transform: scale(2.5) translateY(10px);
+}
+
+.scene.door-is-open {
+    box-shadow: 0 0 50px rgba(255, 255, 200, 0.5);
 }
 
 
@@ -43,16 +44,16 @@ body {
     position: relative;
     transform-style: preserve-3d;
     transform-origin: left center;
-    transition: transform 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: transform 1.8s cubic-bezier(0.4, 0, 0.2, 1);
     border-radius: 5px;
     background-image: url('image/door-wood.jpg');
     background-size: cover;
-    /* ★ 追加: 扉自体の周囲に細い枠 */
+    /* 扉自体の周囲に細い枠 */
     border: 10px solid #5a2d0c;
     box-sizing: border-box; /* borderを含めてwidthとheightにする */
 }
 
-/* ★ 変更: 厚みの部分をより枠らしく */
+/* 厚みの部分をより枠らしく */
 .door::before {
     content: '';
     position: absolute;
@@ -84,7 +85,7 @@ body {
 }
 
 .door.open {
-    transform: rotateY(-90deg);
+    transform: rotateY(-100deg);
 }
 
 .door.open::after {
@@ -200,5 +201,5 @@ body {
 }
 
 .thumb-turn.twist {
-    transform: rotateZ(0deg);
+    transform: rotateZ(0deg) scale(1.1);
 }
