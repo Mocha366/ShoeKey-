@@ -1,0 +1,204 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    overflow: hidden;
+    /* ★変更: bodyに壁テクスチャを適用 */
+    background-image: url('image/wall.png');
+    background-size: cover;
+    background-position: center;
+}
+
+.scene {
+    width: 290px;
+    height: 590px;
+    position: relative;
+    border: 1px solid #ccc;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    transition: transform 1s ease-in-out;
+    transform-origin: 70.8% 54%;
+    transform-style: preserve-3d;
+    perspective: 1200px; 
+    
+    
+    /* ★変更: 背景を白に変更し、テクスチャ指定は削除 */
+    background-color: #ffffff; 
+}
+
+.scene.zoom-in {
+    transform: scale(2.5);
+}
+
+
+
+.door {
+    width: 300px;
+    height: 600px;
+    background-color: #8B4513;
+    position: relative;
+    transform-style: preserve-3d;
+    transform-origin: left center;
+    transition: transform 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 5px;
+    background-image: url('image/door-wood.jpg');
+    background-size: cover;
+    /* ★ 追加: 扉自体の周囲に細い枠 */
+    border: 10px solid #5a2d0c;
+    box-sizing: border-box; /* borderを含めてwidthとheightにする */
+}
+
+/* ★ 変更: 厚みの部分をより枠らしく */
+.door::before {
+    content: '';
+    position: absolute;
+    top: -10px; /* borderの分だけずらす */
+    left: -25px; /* borderと厚みの幅を考慮してずらす */
+    width: 10px;
+    height: calc(100% + 20px); /* borderの分だけ伸ばす */
+    background-color: #5a2d0c;
+    background-image: url('image/door-wood.jpg');
+    background-size: cover;
+    transform: rotateY(90deg) translateZ(15.5px);
+    transform-origin: left center;
+}
+
+.door::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 50px;
+    background: rgba(0, 0, 0, 0.4);
+    transform-origin: bottom left;
+    transform: skewX(-45deg);
+    filter: blur(20px);
+    opacity: 0;
+    transition: transform 1.2s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.door.open {
+    transform: rotateY(-90deg);
+}
+
+.door.open::after {
+    transform: skewX(-15deg) scaleX(2);
+    opacity: 1;
+}
+.floor {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100px;
+    background-image: url('image/floor.jpg');
+    background-repeat: repeat-x;
+    background-size: auto 100px;
+    background-color: #ddd;
+    z-index: 0;
+    transform-origin: center bottom;
+    transition: transform 1s ease-in-out, opacity 1s ease-in-out, filter 1s ease-in-out;
+    filter: blur(0);
+    opacity: 1;
+}
+
+/* ズームイン時の動き */
+.scene.zoom-in ~ .floor {
+    /* 奥行きに移動しながら拡大、フェード、ぼかし */
+    transform: scale(2.5) translateZ(-150px) translateY(150px);
+    opacity: 0;
+    filter: blur(4px);
+}
+
+
+
+.floor {
+	position: fixed; 
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100px;
+    
+    background-color: #ddd;
+    background-image: url('image/floor.jpg');
+    background-size: cover;
+    transform-origin: top center;
+    transform: rotateX(10deg) translateZ(1px);
+    
+}
+
+
+.door-face {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0);
+    transition: background-color 1.2s ease;
+    border-radius: 5px;
+}
+
+.door.open .door-face {
+    background-color: rgba(0,0,0,0.5);
+}
+
+.lock-base {
+    width: 60px;
+    height: 60px;
+    background: radial-gradient(circle at 30% 30%, #e0e0e0, #a0a0a0);
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 2px 2px 8px rgba(0,0,0,0.5), inset 0 0 10px rgba(0,0,0,0.3);
+    z-index: 10;
+    overflow: hidden;
+}
+
+.lock-base::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -60%;
+    width: 20%;
+    height: 200%;
+    background: linear-gradient(
+        to right,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.5) 50%,
+        rgba(255, 255, 255, 0) 100%
+    );
+    transform: rotate(45deg);
+    opacity: 0;
+    pointer-events: none;
+}
+
+.lock-base.glint::after {
+    transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1), opacity 0.3s ease-out;
+    transform: rotate(45deg) translateX(120px);
+    opacity: 1;
+}
+
+.thumb-turn {
+    width: 10px;
+    height: 30px;
+    background: linear-gradient(to right, #f8f8f8, #d0d0d0);
+    border: 1px solid #999;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: transform 0.2s ease-out;
+    transform: rotateZ(-90deg);
+}
+
+.thumb-turn.twist {
+    transform: rotateZ(0deg);
+}
