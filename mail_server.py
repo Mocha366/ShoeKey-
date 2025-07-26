@@ -3,6 +3,7 @@ from email.mime.text import MIMEText
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from dotenv import load_dotenv
+from discord_notify import send_discord_notification
 
 # ───────── 設定読み込み ─────────
 load_dotenv()
@@ -47,10 +48,10 @@ def trigger():
                 f"MQTT メッセージ: {raw}",
                 to_addr
             )
+            send_discord_notification(user_id)  # ← ここがDiscord通知！
             return jsonify(status="sent", user=user_id)
         except Exception as e:
             return jsonify(error=str(e)), 500
-
     return jsonify(status="ignored")
 
 if __name__ == "__main__":
