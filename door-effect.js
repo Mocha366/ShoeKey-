@@ -17,13 +17,16 @@ window.playAnimation = function () {
 
 				setTimeout(() => {
 					door.classList.remove('open');
-					thumbTurn.classList.remove('twist');
 					lockBase.classList.remove('glint');
 					scene.classList.remove('door-is-open');
 
-					setTimeout(() => {
-						scene.classList.remove('zoom-in');
-					}, 1200);
+                        setTimeout(() => {
+                            thumbTurn.classList.remove('twist');
+                        }, 1300); 
+
+					    setTimeout(() => {
+					    	scene.classList.remove('zoom-in');
+					    }, 1500);
 
 				}, 5000);
 			}, 400);
