@@ -25,14 +25,24 @@
 
 		//メッセージ受信時の処理
 		client.onMessageArrived = function (message) {
-		console.log("MQTT受信:", message.payloadString);
+  let msg = message.payloadString;
+  console.log("MQTT受信:", msg);
 
-	// ドアアニメーションを実行
-	if (typeof playAnimation === 'function') {
-		playAnimation();
-	} else {
-		console.warn("playAnimation が定義されていません");
-	}
+  if (typeof playAnimation === 'function') {
+    playAnimation();
+  } else {
+    console.warn("playAnimation が定義されていません");
+  }
+
+  console.log("fetch start");
+  fetch('http://localhost:5000/trigger', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ message: msg })
+  })
+  .then(r => r.json())
+  .then(console.log)
+  .catch(console.error);
 };
 	});
 		
@@ -48,7 +58,7 @@
 		client.connect({userName:"isc", password:"iwasaki3_", useSSL:true, onSuccess:onConnect});
 	}
 	
-	//Subscribeしたメッセージを受信した時に呼び出される関数
+	/*//Subscribeしたメッセージを受信した時に呼び出される関数
 	function onMessageArrived(message) {
 		let msg = message.payloadString;
 		console.log(msg);
@@ -63,7 +73,7 @@
 		.then(r => r.json())
 		.then(console.log)
 		.catch(console.error);
-	}
+	}*/
 	</script>
 	<style type="text/css">
 	</style>
